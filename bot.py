@@ -1,4 +1,4 @@
-import selenium
+from bs4 import BeautifulSoup as soup
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -14,191 +14,81 @@ class Clicker:
         self.bigCookie = self.driver.find_element_by_id("bigCookie")
         WebDriverWait(self.driver, 3).until(lambda d: d.find_element_by_tag_name("span"))  # Wait for page to load
         self.objectList = ["Cursor","Grandma","Farm","Mine","Factory","Bank","Temple","Wizard tower","Shipment","Alchemy lab","Portal","Time machine","Antimatter condenser","Prism", "Chancemaker", "Fractal engine", "Javascript console","Idleverse"]
-        print(self.GetCpsPerC("Grandma"))
+        self.x2UpgradeIds = [7,8,9,44,110,192,294,307,428,480,506,700]
     # Return number of cookies player has
-    def getCookies(self):
+    def getCookies(self): #Returns the ammout of cookies the player currently has
         return self.driver.execute_script("return Game.cookies")
-    def getPrice(self, Object):
+    def getPrice(self, Object): #finds the price of the specified building
 
         for i in range(len(self.objectList)):
             if self.objectList[i].__contains__(Object):
                 return self.driver.execute_script(f'return Game.Objects[\"{self.objectList[i]}\"].bulkPrice')
 
-    def getCPS(self, Object):
+    def getCPS(self, Object): #finds the Cookies per secoond of the specified building
 
        for i in range(len(self.objectList)):
             if self.objectList[i].__contains__(Object):
                 return self.driver.execute_script(f'return Game.Objects[\"{self.objectList[i]}\"].storedCps')
 
-    def GetCpsPerC(self,Object):
+    def GetCpsPerC(self,Object): #Finds and give a decimal of how many cookies per second / cost the building will give so if a building costs 100 cookies and produces 1cps it will return .01
 
         for i in range(len(self.objectList)):
             if self.objectList[i].__contains__(Object):
                 return(self.getCPS(self.objectList[i])/self.getPrice(self.objectList[i]))
-    def clickCookie(self):
-        self.bigCookie.click()
-    def ChooseBuilding(self):
-        self.CpsCList = []
+
+    def getBuildingAmt(self, Object): #gives the total amount of buildings
         for i in range(len(self.objectList)):
-            self.CpsCList.append(self.GetCpsPerC(self.objectList[i]))
-        if max(self.CpsCList) == self.CpsCList[0]:
-            return "product0"
-        elif max(self.CpsCList) == self.CpsCList[1]:
-            return "product1"
-        elif max(self.CpsCList) == self.CpsCList[2]:
-            return "product2"
-        elif max(self.CpsCList) == self.CpsCList[3]:
-            return "product3"
-        elif max(self.CpsCList) == self.CpsCList[4]:
-            return "product4"
-        elif max(self.CpsCList) == self.CpsCList[5]:
-            return "product5"
-        elif max(self.CpsCList) == self.CpsCList[6]:
-            return "product6"
-        elif max(self.CpsCList) == self.CpsCList[7]:
-            return "product7"
-        elif max(self.CpsCList) == self.CpsCList[8]:
-            return "product8"
-        elif max(self.CpsCList) == self.CpsCList[9]:
-            return "product9"
-        elif max(self.CpsCList) == self.CpsCList[10]:
-            return "product10"
-        elif max(self.CpsCList) == self.CpsCList[11]:
-            return "product11"
-        elif max(self.CpsCList) == self.CpsCList[12]:
-            return "product12"
-        elif max(self.CpsCList) == self.CpsCList[13]:
-            return "product13"
-        elif max(self.CpsCList) == self.CpsCList[14]:
-            return "product13"
-        elif max(self.CpsCList) == self.CpsCList[15]:
-            return "product15"
-        elif max(self.CpsCList) == self.CpsCList[16]:
-            return "product16"
-        elif max(self.CpsCList) == self.CpsCList[17]:
-            return "product17"
-        elif max(self.CpsCList) == self.CpsCList[18]:
-            return "product18"
-        elif max(self.CpsCList) == self.CpsCList[19]:
-            return "product19"
-    def buyBuilding(self):
-        if self.ChooseBuilding() == "product0":
-            if self.getCookies() >= self.getPrice(self.objectList[0]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
+            if self.objectList[i].__contains__(Object):
+                return self.driver.execute_script(f'return Game.Objects[\"{self.objectList[i]}\"].amount')
+
+    def getUpgradePrice(self,upId): #Gets upgrade prices
+        return self.driver.execute_script(f'return Game.UpgradesById[{upId}].basePrice')
+
+    def x2Upmath(self, Object, UpId): #The math for calculating efficency of upgrades
+        return(((self.getBuildingAmt(Object) * self.getCPS(Object)) *2)/self.getUpgradePrice(UpId))
+
+    def clickCookie(self): #Clicks the cookie
+        self.bigCookie.click()
+
+    def ChooseBuilding(self, getScore=False): #algorithm for choosing wiich building to buy
+        
+        optimalBuildings = []  # If the building is within certain paramaters it will appear here
+        score = 0
+
+        # If we can purchase the building in less than timeThreshold and is optimal based off of crabtrees equasion, add it to the optimalBuildings list
+        for i in range(len(self.objectList)):
+            if(self.getCPS(self.objectList[i]) / self.getPrice(self.objectList[i])) >= score:
+                optimalBuildings.append(self.objectList[i])
+
+                score = (self.getCPS(self.objectList[i]) / self.getPrice(self.objectList[i]))#ALL OF THIS CODE IS ZACHS's EXEPECT THIS LINE FUCK YOU
+
+            # Exit out of the loop once you can't get a building in <timeThreshold seconds
             else:
-                pass
-        elif self.ChooseBuilding() == "product1":
-            if self.getCookies() >= self.getPrice(self.objectList[1]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product2":
-            if self.getCookies() >= self.getPrice(self.objectList[2]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product3":
-            if self.getCookies() >= self.getPrice(self.objectList[3]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product4":
-            if self.getCookies() >= self.getPrice(self.objectList[4]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product5":
-            if self.getCookies() >= self.getPrice(self.objectList[5]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product6":
-            if self.getCookies() >= self.getPrice(self.objectList[6]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product7":
-            if self.getCookies() >= self.getPrice(self.objectList[7]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product8":
-            if self.getCookies() >= self.getPrice(self.objectList[8]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product9":
-            if self.getCookies() >= self.getPrice(self.objectList[9]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product10":
-            if self.getCookies() >= self.getPrice(self.objectList[10]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product11":
-            if self.getCookies() >= self.getPrice(self.objectList[11]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product12":
-            if self.getCookies() >= self.getPrice(self.objectList[12]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product13":
-            if self.getCookies() >= self.getPrice(self.objectList[13]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product14":
-            if self.getCookies() >= self.getPrice(self.objectList[14]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product15":
-            if self.getCookies() >= self.getPrice(self.objectList[15]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product16":
-            if self.getCookies() >= self.getPrice(self.objectList[16]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product17":
-            if self.getCookies() >= self.getPrice(self.objectList[17]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product18":
-            if self.getCookies() >= self.getPrice(self.objectList[18]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
-        elif self.ChooseBuilding() == "product19":
-            if self.getCookies() >= self.getPrice(self.objectList[19]):
-                item = self.driver.find_element_by_id(self.ChooseBuilding())
-                item.click()
-            else:
-                pass
+                break
+        
+        if getScore == True:
+            return score
+
+        try:
+            buildingToClick = f'product{self.objectList.index(optimalBuildings[len(optimalBuildings) - 1])}'  # Get the building with the highest cps to click
+
+
+            # Check if we can click it
+            if self.getCookies() >= self.getPrice(optimalBuildings[len(optimalBuildings)-1]):
+                self.driver.find_element_by_id(buildingToClick).click()
+        
+        except:
+            pass
+
+
+    def getUpgrade(self):
+        try:
+            for i in range(len(self.x2UpgradeIds)):
+                a = self.driver.find_element_by_xpath(f'//div[@onclick="Game.UpgradesById[{self.x2UpgradeIds[i]}].click(event);"]')#Searches for upgrades
+                if i in (0,1,2,3,4,5,6,7,8,9,10,11,12): #Decides if its a grandma or not as in the list self.x2UpgradeIds[] 0-12 would be the grandma Ids
+                    print(self.x2Upmath("Grandma", self.x2UpgradeIds[i]), self.ChooseBuilding(True))
+                    if self.x2Upmath("Grandma", self.x2UpgradeIds[i]) >= self.ChooseBuilding(True):#do some math
+                        a.click()#click the upgrades
+
+        except:
+            pass

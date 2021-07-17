@@ -5,10 +5,11 @@ import time
 import bot as c
 
 clicker = c.Clicker()  # Clicker object
-
+print(clicker.x2Upmath("Grandma", clicker.x2UpgradeIds[0]))
 def main():
+    clicker.getUpgrade()
     clicker.clickCookie()
-    clicker.buyBuilding()
+    clicker.ChooseBuilding()
     time.sleep(.04)  # Wait 1 second
 
 
