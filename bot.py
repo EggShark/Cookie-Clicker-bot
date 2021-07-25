@@ -14,7 +14,7 @@ class Clicker:
         self.bigCookie = self.driver.find_element_by_id("bigCookie")
         WebDriverWait(self.driver, 3).until(lambda d: d.find_element_by_tag_name("span"))  # Wait for page to load
         self.objectList = ["Cursor","Grandma","Farm","Mine","Factory","Bank","Temple","Wizard tower","Shipment","Alchemy lab","Portal","Time machine","Antimatter condenser","Prism", "Chancemaker", "Fractal engine", "Javascript console","Idleverse"]
-        self.x2UpgradeIds = [7,8,9,44,110,192,294,307,428,480,506,700]
+        self.x2UpgradeIds = [7,8,9,44,110,192,294,307,428,480,506,700,0,1,2,3,4,5,6,43,82,109,188,189,660]#every 13 upgradeds is new buidling 0-12 is Grandma 13-25 is curors 
     # Return number of cookies player has
     def getCookies(self): #Returns the ammout of cookies the player currently has
         return self.driver.execute_script("return Game.cookies")
@@ -82,13 +82,21 @@ class Clicker:
 
 
     def getUpgrade(self):
-        try:
+        
             for i in range(len(self.x2UpgradeIds)):
-                a = self.driver.find_element_by_xpath(f'//div[@onclick="Game.UpgradesById[{self.x2UpgradeIds[i]}].click(event);"]')#Searches for upgrades
-                if i in (0,1,2,3,4,5,6,7,8,9,10,11,12): #Decides if its a grandma or not as in the list self.x2UpgradeIds[] 0-12 would be the grandma Ids
-                    print(self.x2Upmath("Grandma", self.x2UpgradeIds[i]), self.ChooseBuilding(True))
-                    if self.x2Upmath("Grandma", self.x2UpgradeIds[i]) >= self.ChooseBuilding(True):#do some math
-                        a.click()#click the upgrades
+                try: 
+                    a = self.driver.find_element_by_xpath(f'//div[@onclick="Game.UpgradesById[{self.x2UpgradeIds[i]}].click(event);"]')#Searches for upgrades
+                    if i in range(0,12): #Decides if its a grandma or not as in the list self.x2UpgradeIds[] 0-12 would be the grandma Ids
+                        if self.x2Upmath("Grandma", self.x2UpgradeIds[i]) >= self.ChooseBuilding(True) and self.getCookies() >= self.getUpgradePrice(self.x2UpgradeIds[i]):#do some math
+                            a.click()#click the upgrades
+                            print("grandma purchased")
+                    if i in range(12,25):
+                        if self.x2Upmath("Cursor", self.x2UpgradeIds[i]) >= self.ChooseBuilding(True) and self.getCookies() >= self.getUpgradePrice(self.x2UpgradeIds[i]):
+                            a.click()
+                            print("Cursour purchased")
+                except:
+                    pass
+                
 
-        except:
-            pass
+                    
+                

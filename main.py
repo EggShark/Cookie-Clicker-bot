@@ -10,7 +10,6 @@ def main():
     clicker.getUpgrade()
     clicker.clickCookie()
     clicker.ChooseBuilding()
-    time.sleep(.04)  # Wait 1 second
 
 
 
