@@ -15,9 +15,12 @@ class Clicker:
         WebDriverWait(self.driver, 3).until(lambda d: d.find_element_by_tag_name("span"))  # Wait for page to load
         self.objectList = ["Cursor","Grandma","Farm","Mine","Factory","Bank","Temple","Wizard tower","Shipment","Alchemy lab","Portal","Time machine","Antimatter condenser","Prism", "Chancemaker", "Fractal engine", "Javascript console","Idleverse"]
         self.x2UpgradeIds = [7,8,9,44,110,192,294,307,428,480,506,700,0,1,2,3,4,5,6,43,82,109,188,189,660]#every 13 upgradeds is new buidling 0-12 is Grandma 13-25 is curors 
+        self.score = None
     # Return number of cookies player has
     def getCookies(self): #Returns the ammout of cookies the player currently has
         return self.driver.execute_script("return Game.cookies")
+    def giveCookies(self, x):
+        self.driver.execute_script(f"Game.cookies += {x}")
     def getPrice(self, Object): #finds the price of the specified building
 
         for i in range(len(self.objectList)):
@@ -50,7 +53,7 @@ class Clicker:
     def clickCookie(self): #Clicks the cookie
         self.bigCookie.click()
 
-    def ChooseBuilding(self, getScore=False): #algorithm for choosing wiich building to buy
+    def ChooseBuilding(self): #algorithm for choosing wiich building to buy
         
         optimalBuildings = []  # If the building is within certain paramaters it will appear here
         score = 0
@@ -61,13 +64,10 @@ class Clicker:
                 optimalBuildings.append(self.objectList[i])
 
                 score = (self.getCPS(self.objectList[i]) / self.getPrice(self.objectList[i]))#ALL OF THIS CODE IS ZACHS's EXEPECT THIS LINE FUCK YOU
-
+                self.score = score
             # Exit out of the loop once you can't get a building in <timeThreshold seconds
             else:
                 break
-        
-        if getScore == True:
-            return score
 
         try:
             buildingToClick = f'product{self.objectList.index(optimalBuildings[len(optimalBuildings) - 1])}'  # Get the building with the highest cps to click
@@ -80,21 +80,21 @@ class Clicker:
         except:
             pass
 
-
+    def checkUpGet(self, i): #will check to see if you can  buy the upgrade
+        return self.driver.execute_script(f"return Game.UpgradesById[{i}].canBuy()")
     def getUpgrade(self):
         
             for i in range(len(self.x2UpgradeIds)):
-                try: 
-                    a = self.driver.find_element_by_xpath(f'//div[@onclick="Game.UpgradesById[{self.x2UpgradeIds[i]}].click(event);"]')#Searches for upgrades
+                if self.checkUpGet(i):
                     if i in range(0,12): #Decides if its a grandma or not as in the list self.x2UpgradeIds[] 0-12 would be the grandma Ids
-                        if self.x2Upmath("Grandma", self.x2UpgradeIds[i]) >= self.ChooseBuilding(True) and self.getCookies() >= self.getUpgradePrice(self.x2UpgradeIds[i]):#do some math
-                            a.click()#click the upgrades
-                            print("grandma purchased")
-                    if i in range(12,25):
-                        if self.x2Upmath("Cursor", self.x2UpgradeIds[i]) >= self.ChooseBuilding(True) and self.getCookies() >= self.getUpgradePrice(self.x2UpgradeIds[i]):
-                            a.click()
-                            print("Cursour purchased")
-                except:
+                        if self.x2Upmath("Grandma", self.x2UpgradeIds[i]) >= self.score:#do some math
+                            self.driver.execute_script(f"Game.UpgradesById[{i}].buy()")
+                            print("grandma purchased")                        
+                        if i in range(12,25):
+                            if self.x2Upmath("Cursor", self.x2UpgradeIds[i]) >= self.score:
+                                self.driver.execute_script(f"Game.UpgradesById[{i}].buy()")
+                                print("Cursour purchased")
+                else:
                     pass
                 
 

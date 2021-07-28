@@ -1,16 +1,23 @@
 
 import bot as c
 import timer as t
+import cProfile
+import pstats
 timer = t.CodeTimer() 
 clicker = c.Clicker()  # Clicker object
-print(clicker.x2Upmath("Grandma", clicker.x2UpgradeIds[0]))
+clicker.giveCookies(1000)
 def main():
-    timer.codeBegining()
-    clicker.getUpgrade()
-    clicker.clickCookie()
-    clicker.ChooseBuilding()
-    timer.codeEnd()
-    print(f"Code exectued in {timer.getCodeTime():1.2f}")
+    with cProfile.Profile() as pr:
+        timer.codeBegining()
+        clicker.ChooseBuilding()
+        clicker.getUpgrade()
+        clicker.clickCookie()
+        
+        timer.codeEnd()
+        print(f"Code exectued in {timer.getCodeTime():1.2f}")
+    stats = pstats.Stats(pr)
+    stats.sort_stats(pstats.SortKey.TIME)
+    stats.dump_stats(filename="profling.prof")
 
 
 # Idk what it does but its important
