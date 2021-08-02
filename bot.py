@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup as soup
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -51,7 +51,7 @@ class Clicker:
         return(((self.getBuildingAmt(Object) * self.getCPS(Object)) *2)/self.getUpgradePrice(UpId))
 
     def clickCookie(self): #Clicks the cookie
-        self.bigCookie.click()
+        self.driver.execute_script("Game.ClickCookie()")
 
     def ChooseBuilding(self): #algorithm for choosing wiich building to buy
         
@@ -96,6 +96,13 @@ class Clicker:
                                 print("Cursour purchased")
                 else:
                     pass
+    def ShimmerSpawned(self):
+        return self.driver.execute_script("return Game.shimmers.length")
+    def ShimmerLogic(self):
+        if self.ShimmerSpawned() >= 1:
+            shimmer = self.driver.find_element_by_class_name("shimmer")
+            shimmer.click()
+            
                 
 
                     
