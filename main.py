@@ -10,15 +10,15 @@ def main():
     with cProfile.Profile() as pr:
         timer.codeBegining()
         clicker.ChooseBuilding()
-        clicker.getUpgrade()
+        clicker.npUpgrade()
         clicker.clickCookie()
         clicker.ShimmerLogic()
         
         timer.codeEnd()
         print(f"Code exectued in {timer.getCodeTime():1.2f}")
-    #stats = pstats.Stats(pr)
-    #stats.sort_stats(pstats.SortKey.TIME)
-    #stats.dump_stats(filename="profling.prof") Just testing functions please ignore ty
+    stats = pstats.Stats(pr)
+    stats.sort_stats(pstats.SortKey.TIME)
+    stats.dump_stats(filename="profling.prof")
 
 
 

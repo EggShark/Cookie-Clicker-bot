@@ -15,3 +15,6 @@ __pycache__/timer.cpython-39.pyc
 __pycache__/main.cpython-39.pyc
 __pycache__/bot.cpython-39.pyc
 build/main/xref-main.html
+__pycache__/bot.cpython-39.pyc
+*.npy
+piss.py
