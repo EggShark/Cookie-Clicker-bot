@@ -5,7 +5,7 @@ import cProfile
 import pstats
 timer = t.CodeTimer() 
 clicker = c.Clicker()  # Clicker object
-clicker.giveCookies(1000)
+clicker.giveCookies(10000)
 def main():
     with cProfile.Profile() as pr:
         timer.codeBegining()
