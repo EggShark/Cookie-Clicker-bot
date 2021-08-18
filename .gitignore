@@ -18,3 +18,6 @@ build/main/xref-main.html
 __pycache__/bot.cpython-39.pyc
 *.npy
 piss.py
+testing.py
+*.pyc
+*.pyc
