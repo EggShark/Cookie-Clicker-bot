@@ -13,7 +13,7 @@ def main():
         clicker.npUpgrade()
         clicker.clickCookie()
         clicker.ShimmerLogic()
-        
+        clicker.Grandmatypes()
         timer.codeEnd()
         print(f"Code exectued in {timer.getCodeTime():1.2f}")
     stats = pstats.Stats(pr)

@@ -77,7 +77,24 @@ class Clicker:
         "Fractal engine": 150000000000,
         "Javascript console": 1100000000000,
         "Idleverse": 8300000000000}
-        
+        self.GrandmaTypesInfo = [
+            {"name": "Farm", "id":57, "price":55000},
+            {"name":"Factory", "id":58, "price":600000}, 
+            {"name":"Mine","id":59 , "price":6500000}, 
+            {"name":"Bank","id":250, "price":70000000},
+            {"name":"Temple","id":251, "price":1000000000},
+            {"name":"Wizard tower","id":252, "price":16500000000},
+            {"name":"Shipment","id":60, "price":255000000000},
+            {"name":"Alchemy lab","id":61, "price":3750000000},
+            {"name":"Portal","id":62, "price":50000000000},
+            {"name": "Time machine","id":63, "price":700000000000},
+            {"name":"Antimatter condenser","id":103, "price":8500000000000},
+            {"name":"Prism","id":180, "price":105000000000000},
+            {"name":"Chancemaker","id":415, "price":1300000000000000},
+            {"name":"Fractal engine","id":521, "price":15500000000000000},
+            {"name":"Javascript console","id":593, "price": 3550000000000000000},
+            {"name":"Idleverse","id":684, "price":60000000000000000000}
+        ]
         # Return number of cookies player has
     def getCookies(self): #Returns the ammout of cookies the player currently has
         return self.driver.execute_script("return Game.cookies")
@@ -186,10 +203,20 @@ class Clicker:
                     iy += 1
                 ix += 1
             self.newthing = False
-        print("the id of the best upgrade is:", self.UpgradeToBuy, self.upids[self.buildingGroup][self.IdLocation] ,self.upScore, self.score, self.buildingGroup, self.IdLocation)
+        #print("the id of the best upgrade is:", self.UpgradeToBuy, self.upids[self.buildingGroup][self.IdLocation] ,self.upScore, self.score, self.buildingGroup, self.IdLocation)
         if self.upScore > self.score and self.canBuyUpgrade(self.UpgradeToBuy):
             self.buyUpgrade(self.UpgradeToBuy)
             self.BaseCps[self.upids[self.buildingGroup][self.IdLocation]] = self.BaseCps[self.upids[self.buildingGroup][0]] * 2
             self.upids[self.buildingGroup].pop(self.IdLocation)
             self.upIdsPrices[self.buildingGroup].pop(self.IdLocation)
             self.newthing = True
+    def GrandmaTypesMath(self, building, incremetnal, price):
+        print(((self.BaseCps["Grandma"] * 2) + (self.BaseCps[building] * (.01 *(math.floor(self.buildingAmt["Grandma"]/ incremetnal))))/ price))
+        return ((self.BaseCps["Grandma"] * 2) + (self.BaseCps[building] * (.01 *(math.floor(self.buildingAmt["Grandma"]/ incremetnal))))/ price)
+    def Grandmatypes(self):
+        score = 0
+        bestGrandmaType = []
+        for i in range(len(self.GrandmaTypesInfo)):
+            if self.GrandmaTypesMath(self.GrandmaTypesInfo[i]["name"], i + 1, self.GrandmaTypesInfo[i]["price"]) >= score:
+                score = self.GrandmaTypesMath(self.GrandmaTypesInfo[i]["name"], i + 1, self.GrandmaTypesInfo[i]["price"])
+                print(score)
