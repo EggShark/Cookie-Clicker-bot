@@ -202,7 +202,6 @@ class Clicker:
 
                     iy += 1
                 ix += 1
-            self.newthing = False
         #print("the id of the best upgrade is:", self.UpgradeToBuy, self.upids[self.buildingGroup][self.IdLocation] ,self.upScore, self.score, self.buildingGroup, self.IdLocation)
         if self.upScore > self.score and self.canBuyUpgrade(self.UpgradeToBuy):
             self.buyUpgrade(self.UpgradeToBuy)
@@ -211,12 +210,20 @@ class Clicker:
             self.upIdsPrices[self.buildingGroup].pop(self.IdLocation)
             self.newthing = True
     def GrandmaTypesMath(self, building, incremetnal, price):
-        print((self.BaseCps["Grandma"] * 2) + (self.BaseCps[building] * (.01 *(math.floor(self.buildingAmt["Grandma"]/ incremetnal))))/price)
-        return ((self.BaseCps["Grandma"] * 2) + (self.BaseCps[building] * (.01 *(math.floor(self.buildingAmt["Grandma"]/ incremetnal))))/ price)
+        a = (self.BaseCps["Grandma"] * 2) + (self.BaseCps[building] * (.01 *(math.floor(self.buildingAmt["Grandma"]/ incremetnal))))
+        b = a/price
+        return b
     def Grandmatypes(self):
         score = 0
-        bestGrandmaType = []
-        for i in range(len(self.GrandmaTypesInfo)):
-            if self.GrandmaTypesMath(self.GrandmaTypesInfo[i]["name"], i + 1, self.GrandmaTypesInfo[i]["price"]) >= score:
-                score = self.GrandmaTypesMath(self.GrandmaTypesInfo[i]["name"], i + 1, self.GrandmaTypesInfo[i]["price"])
-                print(score)
+        if self.newthing:
+            for i in range(len(self.GrandmaTypesInfo)):
+                if self.GrandmaTypesMath(self.GrandmaTypesInfo[i]["name"], i + 1, self.GrandmaTypesInfo[i]["price"]) >= score:
+                    score = self.GrandmaTypesMath(self.GrandmaTypesInfo[i]["name"], i + 1, self.GrandmaTypesInfo[i]["price"])
+                    self.listLocation = i
+                    print(score)
+            self.newthing = False
+        if score >= self.score and score >= self.upScore and self.canBuyUpgrade(self.GrandmaTypesInfo[self.listLocation]["id"]):
+            self.buyUpgrade(self.GrandmaTypesInfo[self.listLocation["id"]])
+            self.GrandmaTypesInfo.pop(self.listLocation)
+            self.newthing = True
+
