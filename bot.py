@@ -211,7 +211,7 @@ class Clicker:
             self.upIdsPrices[self.buildingGroup].pop(self.IdLocation)
             self.newthing = True
     def GrandmaTypesMath(self, building, incremetnal, price):
-        print(((self.BaseCps["Grandma"] * 2) + (self.BaseCps[building] * (.01 *(math.floor(self.buildingAmt["Grandma"]/ incremetnal))))/ price))
+        print((self.BaseCps["Grandma"] * 2) + (self.BaseCps[building] * (.01 *(math.floor(self.buildingAmt["Grandma"]/ incremetnal))))/price)
         return ((self.BaseCps["Grandma"] * 2) + (self.BaseCps[building] * (.01 *(math.floor(self.buildingAmt["Grandma"]/ incremetnal))))/ price)
     def Grandmatypes(self):
         score = 0
