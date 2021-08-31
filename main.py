@@ -10,10 +10,9 @@ def main():
     with cProfile.Profile() as pr:
         timer.codeBegining()
         clicker.ChooseBuilding()
-        clicker.npUpgrade()
+        clicker.upgrade()
         clicker.clickCookie()
         clicker.ShimmerLogic()
-        clicker.Grandmatypes()
         timer.codeEnd()
         print(f"Code exectued in {timer.getCodeTime():1.2f}")
     stats = pstats.Stats(pr)
