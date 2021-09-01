@@ -14,7 +14,7 @@ def main():
         clicker.clickCookie()
         clicker.ShimmerLogic()
         timer.codeEnd()
-        print(f"Code exectued in {timer.getCodeTime():1.2f}")
+        #print(f"Code exectued in {timer.getCodeTime():1.2f}")
     stats = pstats.Stats(pr)
     stats.sort_stats(pstats.SortKey.TIME)
     stats.dump_stats(filename="profling.prof")
