@@ -327,8 +327,20 @@ class Clicker:
             {"building":"Chancemaker","id":415,"price":1_300_000_000_000_000_000,"function":self.GrandmaTypesMath,"args":("Chancemaker",13,236),"purchased":False,"buyFunc":self.GrandmaTypeBought},
             {"building":"Fractal engine","id":521,"price":15_500_000_000_000_000_000,"function":self.GrandmaTypesMath,"args":("Fractal engine",14,237),"purchased":False,"buyFunc":self.GrandmaTypeBought},
             {"building":"Javascript console","id":593,"price":3_550_000_000_000_000_000_000,"function":self.GrandmaTypesMath,"args":("Javascript console",15,238),"purchased":False,"buyFunc":self.GrandmaTypeBought},
-            {"building":"Idleverse","id":684,"price":60_000_000_000_000_000_000_000,"function":self.GrandmaTypesMath,"args":("Idleverse",16,239),"purchased":False,"buyFunc":self.GrandmaTypeBought}
+            {"building":"Idleverse","id":684,"price":60_000_000_000_000_000_000_000,"function":self.GrandmaTypesMath,"args":("Idleverse",16,239),"purchased":False,"buyFunc":self.GrandmaTypeBought},
             #Milk upgrades are next but will test now
+            {"id":31,"price":9_000_000,"milk factor":0.1,"function":self.kittenMath,"args":(0.1,240),"purchased":False},
+            {"id":32,"price":9_000_000_000,"milk factor":0.125,"function":self.kittenMath,"args":(0.125,241),"purchased":False},
+            {"id":54,"price":90_000_000_000_000,"milk factor":0.15,"function":self.kittenMath,"args":(0.15,242),"purchased":False},
+            {"id":108,"price":90_000_000_000_000_000,"milk factor":0.175,"function":self.kittenMath,"args":(0.175,243),"purchased":False},
+            {"id":187,"price":900_000_000_000_000_000_000,"milk factor":0.2,"function":self.kittenMath,"args":(0.2,244),"purchased":False},
+            {"id":320,"price":900_000_000_000_000_000_000_000,"milk factor":0.2,"function":self.kittenMath,"args":(0.2,245),"purchased":False},
+            {"id":322,"price":900_000_000_000_000_000_000_000_000,"milk factor":0.2,"function":self.kittenMath,"args":(0.2,246),"purchased":False},
+            {"id":425,"price":900_000_000_000_000_000_000_000_000_000,"milk factor":0.2,"function":self.kittenMath,"args":(0.2,247),"purchased":False},
+            {"id":442,"price":900_000_000_000_000_000_000_000_000_000_000,"milk factor":0.175,"function":self.kittenMath,"args":(0.175,248),"purchased":False},
+            {"id":462,"price":900_000_000_000_000_000_000_000_000_000_000_000,"milk factor":0.15,"function":self.kittenMath,"args":(0.15,249),"purchased":False},
+            {"id":494,"price":900_000_000_000_000_000_000_000_000_000_000_000_000,"milk factor":0.125,"function":self.kittenMath,"args":(0.125,250),"purchased":False},
+            {"id":612,"price":900_000_000_000_000_000_000_000_000_000_000_000_000_000,"milk factor":0.115,"function":self.kittenMath,"args":(0.115,251),"purchased":False}
         ]
         self.unfactoredCPS = {
             "Cursor": .1,
@@ -350,7 +362,8 @@ class Clicker:
             "Javascript console": 1100000000000,
             "Idleverse": 8300000000000
         }
-        self.setMilkFactor()
+
+
         # Return number of cookies player has
     def getCookies(self): #Returns the ammout of cookies the player currently has
         return self.driver.execute_script("return Game.cookies")
@@ -395,8 +408,17 @@ class Clicker:
         b = a/self.upgrades[location]["price"]
         return b
 
-    def kittenMath(self, milkFactor):
-        return  1 + milkFactor * self.getMilkLevel() #math i think I have to impletment this later 
+    def kittenMath(self, milkFactor,location):
+        milklevel = self.getMilkLevel()
+        tempdict = self.unfactoredCPS
+        before = 0
+        after = 0
+        for x in self.unfactoredCPS:
+            before += self.unfactoredCPS[x]
+        for x in tempdict:
+            tempdict[x] = tempdict[x] * 1 + milkFactor * milklevel
+            after += tempdict[x]
+        return((after - before)/self.upgrades[location]["price"])
 
     def clickCookie(self): #Clicks the cookie
         self.driver.execute_script("Game.ClickCookie()")
@@ -431,6 +453,10 @@ class Clicker:
     def x2Bought(self, building, location):
         self.BaseCps[building] = self.BaseCps[building] * 2
         self.unfactoredCPS[building] = self.unfactoredCPS[building]
+
+    def milkBuy(self, milkFactor,location):
+        self.Milkfactor += milkFactor
+        self.updateCPS()
 
     def updateCPS(self):
         for i in self.unfactoredCPS:
