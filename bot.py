@@ -9,8 +9,7 @@ import math
 class Clicker:
 
     def __init__(self):
-
-        PATH = 'C:\Program Files (x86)\chromedriver.exe'  # Path to chrome driver
+        PATH = 'chromedriver.exe'
         URL = 'https://orteil.dashnet.org/cookieclicker/'  # URL
 
         self.driver = webdriver.Chrome(PATH)  # Chrome driver
@@ -18,7 +17,6 @@ class Clicker:
         self.driver.get(URL)  # Open URL In driver
         self.bigCookie = self.driver.find_element_by_id("bigCookie")
         self.objectList = ["Cursor","Grandma","Farm","Mine","Factory","Bank","Temple","Wizard tower","Shipment","Alchemy lab","Portal","Time machine","Antimatter condenser","Prism", "Chancemaker", "Fractal engine", "Javascript console","Idleverse"]
-        self.x2UpgradeIds = [7,8,9,44,110,192,294,307,428,480,506,700,0,1,2,3,4,5,6,43,82,109,188,189,660]#every 13 upgradeds is new buidling 0-12 is Grandma 13-25 is curors 
         self.score = None
         self.upScore = 0
         self.milkLevel = None
@@ -372,27 +370,16 @@ class Clicker:
         self.driver.execute_script(f"Game.cookies += {x}")
 
     def getPrice(self, Object): #finds the price of the specified building
-
-        for i in range(len(self.objectList)):
-            if self.objectList[i].__contains__(Object):
-                return math.ceil(self.basePrices[Object]*(1.15**self.getBuildingAmt(Object)))
+        return math.ceil(self.basePrices[Object]*(1.15**self.getBuildingAmt(Object)))
 
     def getCPS(self, Object): #finds the Cookies per secoond of the specified building
-
-       for i in range(len(self.objectList)):
-            if self.objectList[i].__contains__(Object):
-                return self.BaseCps[Object]
+        return self.BaseCps[Object]
 
     def GetCpsPerC(self,Object): #Finds and give a decimal of how many cookies per second / cost the building will give so if a building costs 100 cookies and produces 1cps it will return .01
-
-        for i in range(len(self.objectList)):
-            if self.objectList[i].__contains__(Object):
-                return(self.getCPS(self.objectList[i])/self.getPrice(self.objectList[i]))
+        return(self.BaseCps[Object])/self.getPrice(Object)
 
     def getBuildingAmt(self, Object): #gives the total amount of buildings
-        for i in range(len(self.objectList)):
-            if self.objectList[i].__contains__(Object):
-                return self.buildingAmt[Object]
+        return self.buildingAmt[Object]
 
     def getUpgradePrice(self,location): #Gets upgrade prices
         return self.upgrades[location]["price"]
